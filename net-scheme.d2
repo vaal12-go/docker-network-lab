@@ -1,0 +1,81 @@
+vars: {
+    d2-config: {
+      layout-engine: tala
+    }
+  }
+  direction: down
+
+internet {
+    shape: cloud
+}
+
+host_computer {   
+    
+}
+
+bridge_net1 {
+    host1: {
+        eth0 : {
+            icon: ./img/RJ45-Female.svg 
+            addr:    ||
+        IP: 127.0.0.1
+        ||
+        }
+    }
+
+    eth0 : {
+        icon: ./img/RJ45-Female.svg
+        addr:    ||
+    IP: 127.0.0.1
+    ||
+    }
+    
+    
+}
+
+
+
+bridge_net2: {
+    host2: { 
+        eth0 : {
+            icon: ./img/RJ45-Female.svg
+            addr:    ||
+        IP: 127.0.0.1
+        ||
+        }
+    }
+
+    eth1 : {
+        icon: ./img/RJ45-Female.svg
+        addr:    ||
+    IP: 127.0.0.1
+    ||
+    }
+
+}
+
+router_c : {
+    direction: right
+  
+
+    eth2 : {
+        icon: ./img/RJ45-Female.svg
+        addr:    ||
+    IP: 127.0.0.1
+    ||
+    }
+}
+
+
+
+
+bridge_net1.host1.eth0 <-> bridge_net1.eth0
+bridge_net1.eth0 <-> router_c
+bridge_net2.host2.eth0 <-> bridge_net2.eth1
+bridge_net2.eth1 <-> router_c
+# bridge_net1.router_c -> bridge_net1
+router_c.eth2 <-> internet
+# router_c.eth1 <-> router_c.eth
+# bridge_net1.router_c.eth0 <-> bridge_net1.router_c.eth1
+
+host_computer -> internet
