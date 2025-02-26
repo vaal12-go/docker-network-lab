@@ -7,7 +7,8 @@ Task - create docker containers which can route traffic. 3 docker network and ro
 ## How to run
 
 1. Create container image with networked_image/Dockerfile (it has to be named 'networked-ubuntu-07' as docker compose will require such image)
-1. 
+1. 'compose up' network_compose/compose.yaml from the network_compose directory (.yaml file uses relative paths to init scripts to be placed to corresponding containers)
+1. Check connectivity by connecting to each container.
 
 
 ## Caveates
