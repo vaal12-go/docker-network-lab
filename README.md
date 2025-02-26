@@ -4,6 +4,11 @@ Task - create docker containers which can route traffic. 3 docker network and ro
 ![Network diagramm](/out/net-scheme/Routing%20Lab%20(static%20+%20NAT).png)
 
 
+## How to run
+
+1. Create container image with networked_image/Dockerfile (it has to be named 'networked-ubuntu-07' as docker compose will require such image)
+1. 
+
 
 ## Caveates
 * As per explanation https://github.com/bitmeal/docker-nat-router-container-example
