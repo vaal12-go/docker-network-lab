@@ -1,0 +1,41 @@
+@startuml Routing Lab (static + NAT)
+skinparam defaultTextAlignment left
+' skinparam DefaultFontColor red
+header - 1 - 
+footer Routing Lab (static+NAT) network diagramm [26Feb2025]
+title Routing Lab (static+NAT) network diagramm
+ 
+nwdiag {
+    network inet {
+        address = "192.168.0.0/27"
+        host [address = "192.168.0.1", description="<b>Docker host machine</b>\n Routes (NAT) traffic\n from the network to internet"];
+        router1 [address = "192.168.0.10", description = "<b>Router container</b>\n Linux router which connects all\n networks together.\n Initialized with\n\t network_compose/router_init.sh";];
+        description = "<b>Internet connection</b>\nDocker bridge network driver";
+    }
+    
+    network internal1 {
+        address = "192.168.0.32/27";
+        router1 [address = "192.168.0.40", ];
+        deep_container1 [address = "192.168.0.41", description = "<b>Deep container 1</b>\n Initialized with\n\t network_compose/deep_container1_init.sh\n Has access to 192.168.0.71 and to internet."];
+    }
+
+    network internal2 {
+        address = "192.168.0.64/27";
+        router1 [address = "192.168.0.70"];
+        deep_container2 [address = "192.168.0.71", description = "<b>Deep container 2</b>\n Initialized with\n\t network_compose/deep_container2_init.sh\n Has access to 192.168.0.41 but NOT to internet."];
+    }
+}
+'END nwdiag {
+
+legend top left
+    Task of this lab work is to:
+    1. Create router docker container
+    2. Statically link 2 internal networks 
+        (internal1 and internal2) together 
+        (accessible back and forth)
+    3. Create NAT connection to internet only for internal1 network only 
+        3.1 internal2 networ should be able to access internal1,
+            but not internet
+end legend
+
+@enduml

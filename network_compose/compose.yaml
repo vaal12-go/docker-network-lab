@@ -1,0 +1,101 @@
+name: routing-lab-static-and-NAT
+
+# To start compose: 
+#   docker compose up
+# When changes are made to network/container run with: 
+#   docker compose up --force-recreate 
+# To connect to running container
+#   docker exec -it router_instance1 sh
+
+
+services:
+  router_instance:
+    image: "networked-ubuntu-07"
+    hostname: "router_instance"
+    entrypoint: 
+      - bash
+      - /root/router_init.sh
+    container_name: router_instance
+    privileged: true
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    sysctls:
+      - net.ipv4.ip_forward=1
+      - net.ipv4.tcp_timestamps=0 #Check if this is needed
+    volumes:
+      - ./router_init.sh:/root/router_init.sh
+    networks:
+      inet:
+        ipv4_address: 192.168.0.10
+      internal1:
+        ipv4_address: 192.168.0.40
+      internal2:
+        ipv4_address: 192.168.0.70
+  # END router_instance:
+
+  deep_container1:
+    image: "networked-ubuntu-07"
+    hostname: "deep_container1"
+    container_name: deep_container1
+    privileged: true
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    sysctls:
+      - net.ipv4.ip_forward=1
+    volumes:
+      - ./deep_container1_init.sh:/root/deep_container1_init.sh
+    entrypoint: 
+      - /root/deep_container1_init.sh
+    networks:
+      internal1:
+        ipv4_address: 192.168.0.41
+  # END deep_container1:
+
+  deep_container2:
+    image: "networked-ubuntu-07"
+    hostname: "deep_container2"
+    container_name: deep_container2
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    sysctls:
+      - net.ipv4.ip_forward=1
+      - net.ipv4.tcp_timestamps=0
+    volumes:
+      - ./deep_container2_init.sh:/root/deep_container2_init.sh
+    entrypoint: 
+      - /root/deep_container2_init.sh
+    networks:
+      internal2:
+        ipv4_address: 192.168.0.71
+  # END deep_container2:
+
+networks:
+  inet:
+    driver: bridge
+  # https://docs.docker.com/reference/compose-file/networks/#ipam
+    ipam:
+      config:
+        - subnet: 192.168.0.0/27
+
+  internal1:
+    driver: macvlan
+    driver_opts:
+      com.docker.network.bridge.gateway_mode_ipv4: routed
+    internal: true
+    ipam:
+      config:
+        - subnet: 192.168.0.32/27
+        
+
+  internal2:
+    driver: macvlan
+    driver_opts:
+      com.docker.network.bridge.gateway_mode_ipv4: routed
+    internal: true
+    ipam:
+      config:
+        - subnet: 192.168.0.64/27
+
